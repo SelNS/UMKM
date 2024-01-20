@@ -1,5 +1,6 @@
 // Import modul-modul yang diperlukan dari Azle
 import { Principal, text, nat, record, Vec, query, update, Canister, Void } from 'azle';
+import { v4 as uuidv4 } from 'uuid';
 
 // Definisikan tipe data Product
 type Product = {
@@ -44,6 +45,12 @@ service : {
   };
 
   update addProduct(newProduct: record({ name: text, description: text, price: nat })) : Void {
+    // Validation checks for name, description, and price can be added here.
+    if (!newProduct.name || !newProduct.description || typeof newProduct.price !== 'number') {
+        console.error('Invalid product data. Name, description, and price are required.');
+        return;
+    }
+
     const productId = umkm.products.length + 1;
     const product: Product = {
       productId,
@@ -53,4 +60,3 @@ service : {
     umkm.products.push(product);
   };
 };
-
